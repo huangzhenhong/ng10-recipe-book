@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'recipe-book';
+  visibleTabName: string = 'recipes';
+
+  onTabChanged(event: any){
+    this.visibleTabName = event;
+  }
 }
