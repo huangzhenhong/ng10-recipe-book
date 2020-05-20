@@ -2,14 +2,13 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <app-recipes *ngIf="visibleTabName==='recipes'"></app-recipes>
-      <app-shopping-list *ngIf="visibleTabName!=='recipes'"></app-shopping-list>
+      <router-outlet></router-outlet>
     </div>
   </div>
-  <div class="row" *appUnless="visibleTabName==='recipes'">
+  <!-- <div class="row" *appUnless="visibleTabName==='recipes'">
       <div class="col-md-12">
           <p appBasicHighlight>Style me with basic directive!</p>
           <p appBetterHighlight [defaultColor]="'yellow'" [highlightColor]="'blue'">Style me with better directive</p>
       </div>
     </div>
-</div>
+</div> -->

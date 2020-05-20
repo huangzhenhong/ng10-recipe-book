@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,13 +9,21 @@ import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '
 export class HeaderComponent implements OnInit {
 
   @Output() tabChanged = new EventEmitter<string>();
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
   }
 
   onLinkChanged(event: any) {
     this.tabChanged.emit(event);
+  }
+
+  onLogin() {
+    this.authService.logIn();
+  }
+
+  onLogout() {
+    this.authService.logOut();
   }
 
 }

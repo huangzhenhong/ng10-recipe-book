@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {
+  RouterModule,
+  Routes  
+} from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +20,14 @@ import { BetterHighlightDirective } from './shared/directives/better-highlight/b
 import { UnlessDirective } from './shared/directives/unless/unless.directive';
 import { DropdownDirective } from './shared/directives/dropdown/dropdown.directive';
 
+import { LoggingService } from './shared/services/logging.service';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { AuthService } from './shared/services/auth.service';
+import { AuthGuard } from './shared/guards/auth-guard.service';
+import { CanDeactivateGuard } from './shared/guards/can-deactivate-guard.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
+import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,14 +41,17 @@ import { DropdownDirective } from './shared/directives/dropdown/dropdown.directi
     BasicHighlightDirective,
     BetterHighlightDirective,
     UnlessDirective,
-    DropdownDirective
+    DropdownDirective,
+    NotFoundComponent,
+    ErrorPageComponent,
+    RecipeStartComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule
   ],
-  providers: [],
+  providers: [LoggingService, AuthGuard, AuthService, CanDeactivateGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
