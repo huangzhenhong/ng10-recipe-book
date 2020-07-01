@@ -1,57 +1,64 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   RouterModule,
   Routes  
 } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { ShoppingListComponent } from './shopping-list/shopping-list.component';
-import { RecipesComponent } from './recipes/recipes.component';
-import { RecipeListComponent } from './recipes/recipe-list/recipe-list.component';
-import { RecipeItemComponent } from './recipes/recipe-list/recipe-item/recipe-item.component';
-import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
-import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
 import { BasicHighlightDirective } from './shared/directives/basic-highlight/basic-highlight.directive';
 import { BetterHighlightDirective } from './shared/directives/better-highlight/better-highlight.directive';
 import { UnlessDirective } from './shared/directives/unless/unless.directive';
 import { DropdownDirective } from './shared/directives/dropdown/dropdown.directive';
-
 import { LoggingService } from './shared/services/logging.service';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthService } from './shared/services/auth.service';
 import { AuthGuard } from './shared/guards/auth-guard.service';
 import { CanDeactivateGuard } from './shared/guards/can-deactivate-guard.service';
 import { ErrorPageComponent } from './error-page/error-page.component';
-import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
+import { PipeServersComponent } from './demos/pipe-servers/pipe-servers.component';
+import { ShortenPipe } from './shared/pipes/shorten.pipe';
+import { FilterPipe } from './shared/pipes/filter.pipe';
+import { AuthComponent } from './auth/auth/auth.component';
+import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
+import { AuthInterceptorService } from './auth/auth/auth-interceptor.service';
+import { AlertComponent } from './shared/components/alert/alert.component';
+import { RecipesModule } from './recipes/recipes.module';
+import { ShoppingListModule } from './shopping-list/shopping-list.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    ShoppingListComponent,
-    RecipesComponent,
-    RecipeListComponent,
-    RecipeItemComponent,
-    RecipeDetailComponent,
-    ShoppingEditComponent,
+    ShortenPipe,
+    
     BasicHighlightDirective,
     BetterHighlightDirective,
     UnlessDirective,
     DropdownDirective,
     NotFoundComponent,
     ErrorPageComponent,
-    RecipeStartComponent
+
+    PipeServersComponent,
+    FilterPipe,
+    AuthComponent,
+    LoadingSpinnerComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    RecipesModule,
+    ShoppingListModule,
     AppRoutingModule,
-    FormsModule
   ],
-  providers: [LoggingService, AuthGuard, AuthService, CanDeactivateGuard],
+  providers: [LoggingService, AuthGuard, AuthService, CanDeactivateGuard, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

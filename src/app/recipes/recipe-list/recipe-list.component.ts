@@ -1,29 +1,44 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Recipe } from '../recipe.model';
 import { RecipeService } from '../services/recipe.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-list',
   templateUrl: './recipe-list.component.html',
   styleUrls: ['./recipe-list.component.css']
 })
-export class RecipeListComponent implements OnInit {
+export class RecipeListComponent implements OnInit, OnDestroy {
 
   recipes: Recipe[];
+  recipesChangedSubscription: Subscription;
 
-  constructor(private recipeService: RecipeService) { }
+  constructor(private recipeService: RecipeService, 
+    private route: ActivatedRoute, 
+    private router: Router) { 
+
+    }
 
   ngOnInit(): void {
+    this.recipesChangedSubscription = this.recipeService.recipesChanged
+    .subscribe((recipes) => {
+      this.recipes = recipes;
+    });
+    
     this.loadRecipes();
+  }
+
+  ngOnDestroy(): void {
+    this.recipesChangedSubscription.unsubscribe();
   }
 
   loadRecipes() {
-    this.recipes = this.recipeService.getAllRecipes();
+    this.recipeService.getAllRecipes();
   }
 
   onAdd(){
-    this.recipeService.add({id: 2, name: 'New Server', description: 'This is a new server', imagePath: '', ingredients: []});
-    this.loadRecipes();
+    this.router.navigate(['new'], {relativeTo: this.route});
   }
                 
 }

@@ -1,7 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
-import { Recipe } from './recipe.model';
-import { LoggingService } from '../shared/services/logging.service';
-import { RecipeService } from './services/recipe.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-recipes',
