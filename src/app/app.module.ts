@@ -28,7 +28,8 @@ import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loa
 import { AuthInterceptorService } from './auth/auth/auth-interceptor.service';
 import { AlertComponent } from './shared/components/alert/alert.component';
 import { RecipesModule } from './recipes/recipes.module';
-import { ShoppingListModule } from './shopping-list/shopping-list.module';
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
+import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,9 @@ import { ShoppingListModule } from './shopping-list/shopping-list.module';
     AuthComponent,
     LoadingSpinnerComponent,
     AlertComponent,
+
+    ShoppingEditComponent,
+    ShoppingListComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +59,6 @@ import { ShoppingListModule } from './shopping-list/shopping-list.module';
     ReactiveFormsModule,
     HttpClientModule,
     RecipesModule,
-    ShoppingListModule,
     AppRoutingModule,
   ],
   providers: [LoggingService, AuthGuard, AuthService, CanDeactivateGuard, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
