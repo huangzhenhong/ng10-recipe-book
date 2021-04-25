@@ -2,6 +2,10 @@ import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, OnDestr
 import { AuthService } from '../shared/services/auth.service';
 import { RecipeService } from '../recipes/services/recipe.service';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../store/app.reducer';
+import * as authActions from '../auth/store/auth.actions';
 
 @Component({
   selector: 'app-header',
@@ -13,11 +17,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Output() tabChanged = new EventEmitter<string>();
   isAuthenticated = false;
   private userSub: Subscription;
-  constructor(private authService: AuthService, private recipeService: RecipeService) { }
+  constructor(private authService: AuthService, private recipeService: RecipeService, private store: Store<fromApp.AppState>) { }
 
   ngOnInit(): void {
-    this.userSub = this.authService.userChanged.subscribe(user => {
-      this.isAuthenticated = !!user;
+    this.userSub = this.store.select('auth')
+      .pipe(map(authState => authState.user))
+      .subscribe(user => {
+        this.isAuthenticated = !!user;
     });
   }
 
@@ -34,7 +40,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onLogout() {
-    this.authService.logOut();
+    //this.authService.logOut();
+    this.store.dispatch(new authActions.Logout());
   }
 
   onFetch() {

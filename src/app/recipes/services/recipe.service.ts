@@ -3,6 +3,9 @@ import { Recipe } from '../../recipes/recipe.model';
 import { Ingredient } from '../../shared/models/ingredient.model';
 import { Subject  } from 'rxjs';
 import { DbService } from '../../services/db.service';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../../store/app.reducer';
+import * as recipeActions from '../store/recipe.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,7 @@ export class RecipeService {
   recipesChanged = new Subject<Recipe[]>();
   private recipes: Recipe[] = [];
 
-  constructor(private dbService: DbService) { }
+  constructor(private dbService: DbService, private store: Store<fromApp.AppState>) { }
 
   get(id: number) {
     return this.recipes.find(x => x.id === id);
@@ -25,8 +28,7 @@ export class RecipeService {
       (data: Recipe[]) => {
         if(data) {
           this.recipes = data;
-          this.recipesChanged.next(this.recipes.slice());
-          console.log(this.recipes);
+          this.store.dispatch(new recipeActions.SetRecipes(data));
         }
       }, 
       error => {

@@ -5,6 +5,10 @@ import { RecipeService } from '../services/recipe.service';
 import { FormatWidth } from '@angular/common';
 import { Recipe } from '../recipe.model';
 
+import { Store } from '@ngrx/store';
+import * as fromApp from '../../store/app.reducer';
+import * as recipeActions from '../store/recipe.actions';
+
 @Component({
   selector: 'app-recipe-edit',
   templateUrl: './recipe-edit.component.html',
@@ -15,15 +19,22 @@ export class RecipeEditComponent implements OnInit {
   id: number;
   editMode = false;
   recipeForm: FormGroup;
-  constructor(private route: ActivatedRoute, private recipeService: RecipeService, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute, 
+    private recipeService: RecipeService, 
+    private router: Router, 
+    private store: Store<fromApp.AppState>) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: Params) => {
-      this.id = +params['id'];
-      this.editMode = params['id'] != null;
-      console.log(this.editMode);
-      this.initForm();
+
+    this.store.select("recipes").subscribe(data => {
+      if(data.editedRecipeId > -1){
+        this.id = data.editedRecipeId;
+        this.editMode = true;
+        this.initForm();
+      }
     });
+
   }
 
   private initForm() {
@@ -84,9 +95,9 @@ export class RecipeEditComponent implements OnInit {
       this.recipeForm.value['ingredients']);
 
     if(this.editMode) {
-      this.recipeService.update(this.id, newRecipe)
+      this.store.dispatch(new recipeActions.UpdateRecipe(newRecipe));
     }else {
-      this.recipeService.add(newRecipe);
+      this.store.dispatch(new recipeActions.AddRecipe(newRecipe));
     }
 
     this.onCancel();

@@ -1,22 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService, AuthResponseData } from '../../shared/services/auth.service';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { AuthService } from '../../shared/services/auth.service';
+import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../../store/app.reducer';
+import * as authActions from '../store/auth.actions';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
 
   isLoginMode = true;
   isLoading = false;
   error: string = null;
-  constructor(private authService: AuthService, private router: Router) { }
+  private storeSub: Subscription;
+  constructor(private store: Store<fromApp.AppState>) { }
 
   ngOnInit(): void {
+    this.storeSub = this.store.select("auth").subscribe(authState => {
+      this.isLoading = authState.loading;
+      this.error = authState.authError;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if(this.storeSub) {
+      this.storeSub.unsubscribe();
+    }
   }
 
   onSwitchMode() {
@@ -26,32 +39,17 @@ export class AuthComponent implements OnInit {
   onSubmit(form: NgForm) {
     if(!form.valid) return;
 
-    this.isLoading = true;
     let formValues = form.value as any;
     let email = formValues.email;
     let password = formValues.password;
-    let authObs: Observable<AuthResponseData>;
 
     if(this.isLoginMode) {
-      console.log("login...");
-      authObs = this.authService.logIn(email, password);
+      console.log("Start login...");
+      this.store.dispatch(new authActions.LoginStart({email: email, password: password }))
     }else {
       console.log("signup...");
-      authObs = this.authService.signUp(email, password);
+      this.store.dispatch(new authActions.SignUpStart({email: email, password: password}));
     }
-
-    authObs.subscribe(
-      res => {
-        console.log(res);
-        this.isLoading = false;
-        this.router.navigate(['/recipes']);
-      },
-      errorMessage => {
-        this.error = "An error occurred:" + errorMessage;
-        this.isLoading = false;
-      }
-    );
-
     form.reset();
   }
 
