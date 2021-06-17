@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  AuthWebApiKey: 'AIzaSyCiepyZbmt2drWmq2NPMpueen8h9-nstJY'
+  AuthWebApiKey: ''
 };
 
 /*
